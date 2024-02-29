@@ -9,6 +9,44 @@
 # move said applications out of the umbrella.
 import Config
 
+config :admin,
+  ecto_repos: [Blog.Repo],
+  generators: [context_app: false]
+
+# Configures the endpoint
+config :admin, Admin.Endpoint,
+  url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
+  render_errors: [
+    formats: [html: Admin.ErrorHTML, json: Admin.ErrorJSON],
+    layout: false
+  ],
+  pubsub_server: Admin.PubSub,
+  live_view: [signing_salt: "dpPlA/TA"],
+  server: false
+
+# Configure esbuild (the version is required)
+config :esbuild,
+  version: "0.17.11",
+  admin: [
+    args:
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../apps/admin/assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
+# Configure tailwind (the version is required)
+config :tailwind,
+  version: "3.4.0",
+  admin: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../apps/admin/assets", __DIR__)
+  ]
+
 # Configure Mix tasks and generators
 config :blog,
   ecto_repos: [Blog.Repo]
