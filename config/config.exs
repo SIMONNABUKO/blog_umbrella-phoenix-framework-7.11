@@ -9,6 +9,9 @@
 # move said applications out of the umbrella.
 import Config
 
+config :admin,
+  ecto_repos: [Blog.Repo]
+
 # Configure Mix tasks and generators
 config :blog,
   ecto_repos: [Blog.Repo]

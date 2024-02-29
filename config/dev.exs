@@ -1,5 +1,8 @@
 import Config
 
+config :admin,
+  ecto_repos: [Blog.Repo]
+
 # Configure your database
 config :blog, Blog.Repo,
   username: "postgres",

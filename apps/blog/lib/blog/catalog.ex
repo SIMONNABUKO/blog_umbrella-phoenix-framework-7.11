@@ -12,6 +12,11 @@ defmodule Blog.Catalog do
     |> Repo.insert()
   end
 
+  def change_category(%Category{} = category, attrs \\ %{}) do
+    category
+    |> Category.changeset(attrs)
+  end
+
   @doc """
   Retrieves all categories with associated posts in the latest order.
   """
