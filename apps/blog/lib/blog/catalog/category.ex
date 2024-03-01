@@ -14,7 +14,9 @@ defmodule Blog.Catalog.Category do
   @doc false
   def changeset(category, attrs) do
     category
-    |> cast(attrs, [:name, :active, :user_id])
-    |> validate_required([:name, :active, :user_id])
+    |> cast(attrs, [:name, :user_id])
+    |> validate_required([:name, :user_id])
+    |> unique_constraint(:name)
+    |>validate_length(:name, min: 3, max: 100)
   end
 end
