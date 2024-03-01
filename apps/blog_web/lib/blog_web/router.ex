@@ -1,5 +1,6 @@
 defmodule BlogWeb.Router do
   use BlogWeb, :router
+  alias Admin
 
   import BlogWeb.UserAuth
 
@@ -13,6 +14,16 @@ defmodule BlogWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :admin do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {Admin.Layouts, :admin}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug :fetch_current_user
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -21,6 +32,13 @@ defmodule BlogWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/dashboard", Admin do
+    pipe_through [:admin, :require_authenticated_user]
+    live "/", Live.HomeLive.Index
+    live "/categories/create", Live.CategoryLive.Create
+    live "/posts/create", Live.PostLive.Create
   end
 
   # Other scopes may use custom stacks.
